@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lemi help</title>
+  <script>
+    // Apply theme immediately before CSS loads to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-content">
+        <h1>Lemi help</h1>
+        <div class="status" id="status">
+          <span class="status-dot"></span>
+          <span id="statusText">Ready</span>
+        </div>
+        <div class="powered-by">Powered by DATAFYNOW</div>
+      </div>
+      <div class="header-actions">
+        <button id="languageBtn" class="header-icon-btn" title="Language / Gjuha">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span id="languageIndicator" class="language-indicator">EN</span>
+        </button>
+        <button id="historyBtn" class="header-icon-btn" title="Chat History">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </button>
+        <button id="settingsBtn" class="header-icon-btn" title="Settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M10.5 3h3l.5 2 1.7.6 1.5-1.2 2.1 2.1-1.2 1.5.6 1.7 2 .5v3l-2 .5-.6 1.7 1.2 1.5-2.1 2.1-1.5-1.2-1.7.6-.5 2h-3l-.5-2-1.7-.6-1.5 1.2-2.1-2.1 1.2-1.5-.6-1.7-2-.5v-3l2-.5.6-1.7-1.2-1.5 2.1-2.1 1.5 1.2 1.7-.6.5-2z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- API Key Setup -->
+    <div class="api-key-section" id="apiKeySection">
+      <div class="api-key-header">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <span>API Key Required</span>
+      </div>
+      <input
+        type="password"
+        id="apiKeyInput"
+        placeholder="Enter your Claude API key"
+        class="api-key-input"
+      />
+      <button id="saveApiKey" class="btn-primary">Save Key</button>
+      <p class="api-key-hint">Get your API key from <a href="https://console.anthropic.com/" target="_blank">console.anthropic.com</a></p>
+    </div>
+
+    <!-- Chat Container -->
+    <div class="chat-container" id="chatContainer">
+      <div class="chat-messages" id="chatMessages">
+        <div class="message bot">
+          <div class="message-content">
+            Hi! I'm your AI form assistant. You can either type what you'd like to fill out, or upload an image (like an ID card, business card, or document) and I'll extract the information to fill the form fields.
+          </div>
+        </div>
+      </div>
+
+      <!-- Image Preview Area -->
+      <div class="image-preview-container hidden" id="imagePreviewContainer">
+        <div class="image-preview-header">
+          <span>Attached Image</span>
+          <button id="removeImage" class="btn-remove-image">×</button>
+        </div>
+        <img id="imagePreview" src="" alt="Preview" />
+      </div>
+
+      <!-- Input Area -->
+      <div class="input-area">
+        <input type="file" id="imageInput" accept="image/*" class="hidden" />
+        <div class="input-wrapper">
+          <button id="uploadImageBtn" class="btn-icon" title="Upload image">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </button>
+          <textarea
+            id="userInput"
+            placeholder="Type a message or upload an image..."
+          ></textarea>
+          <button id="sendBtn" class="btn-send">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Footer -->
+    <div class="footer">
+      <button id="clearChat" class="btn-footer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+        Clear Chat
+      </button>
+      <button id="detectFields" class="btn-footer btn-detect">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 21l-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z"></path>
+        </svg>
+        Scan Page
+      </button>
+    </div>
+  </div>
+
+  <!-- History Modal -->
+  <div id="historyModal" class="modal hidden">
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <div class="modal-header-content">
+          <h3>Chat History</h3>
+          <p class="modal-subtitle">View and manage your saved conversations</p>
+        </div>
+        <button id="closeHistoryModal" class="btn-close">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="history-search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+          <input type="text" id="historySearch" placeholder="Search conversations..." />
+        </div>
+        <div id="savedChatsList" class="saved-chats-list">
+          <!-- Saved chats will be populated here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Settings</h3>
+        <button id="closeSettingsModal" class="btn-close">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="settings-section">
+          <div class="settings-row">
+            <div class="settings-label-group">
+              <label>Dark Mode</label>
+              <p class="settings-hint">Toggle between light and dark theme</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="themeToggleSwitch">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="settings-divider"></div>
+
+        <div class="settings-section">
+          <label for="settingsApiKeyInput">Claude API Key</label>
+          <p class="settings-hint">Your API key is stored locally and never shared</p>
+          <input type="password" id="settingsApiKeyInput" placeholder="sk-ant-..." class="settings-input" />
+          <p class="api-key-hint">Get your API key from <a href="https://console.anthropic.com/" target="_blank">console.anthropic.com</a></p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="cancelSettings" class="btn-secondary">Cancel</button>
+        <button id="saveSettings" class="btn-primary">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>
